@@ -5,7 +5,15 @@ import string
 import pandas as pd
 import  openpyxl
 from collections import Counter
-
+import nltk
+from nltk.corpus import stopwords
+from nlp_id.stopword import StopWord
+from nlp_id.tokenizer import Tokenizer
+from nlp_id.postag import PosTag
+from nlp_id.stopword import StopWord
+from nlp_id.lemmatizer import Lemmatizer
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 def main():
     st.title("Persiapan Data")
     st.write("Halaman ini berfokus pada Pemahaman dan Pembersihan Data.")
@@ -212,5 +220,107 @@ def main():
     df_reviews_all_proses['content_cleaning_normalized'] = df_reviews_all_proses['content_cleaning_normalized'].apply(lambda x: expand_chat_words(x, chat_words_mapping))
     st.dataframe(df_reviews_all_proses.head(20), selection_mode="multi-row", use_container_width=True)
     
+    st.subheader("menghapus kata henti dan kata yang tidak bermakna")
+    st.write("Menghitung jumlah frefquensi kata")
+
+    nltk.download('stopwords')
+    from nlp_id.stopword import StopWord
+    stopword_nlp_id = StopWord()
+    def remove_stop_words_nltk(text):
+        stop_words = stopwords.words('indonesian')
+        stop_words.extend([
+            "pmm","merdeka mengajar","nya"
+        ])
+        stop_words = set(stop_words)
+        words = text.split()
+        filtered_words = [word for word in words if word.lower() not in stop_words]
+        return ' '.join(filtered_words)
+    def remove_stop_words_nlp_id(text):
+        rm_stopword = remove_stop_words_nltk(text)
+        return stopword_nlp_id.remove_stopword(rm_stopword)
+
+    df_reviews_all_proses['content_cleaning_normalized'] = df_reviews_all_proses['content_cleaning_normalized'].apply(remove_stop_words_nlp_id)
+
+    df_reviews_all_proses['content_cleaning_normalized'] = df_reviews_all_proses['content_cleaning_normalized'].apply(lambda x: expand_chat_words(x, chat_words_mapping))
+    st.dataframe(df_reviews_all_proses.head(20), selection_mode="multi-row", use_container_width=True)
+
+    df_reviews_all_proses = df_reviews_all_proses[df_reviews_all_proses['content_cleaning_normalized'].str.strip() != '']
+    
+    st.subheader("Tokenizer")
+    st.write("Menghitung jumlah frefquensi kata")
+    tokenizer = Tokenizer()
+    def tokenizing_words(text):
+        tokens = tokenizer.tokenize(text)
+        return tokens
+
+    df_reviews_all_proses['content_tokenizing']  = df_reviews_all_proses['content_cleaning_normalized'] .apply(tokenizing_words)
+    st.dataframe(df_reviews_all_proses.head(20), selection_mode="multi-row", use_container_width=True)
+    
+    st.subheader("POS")
+    st.write("Menghitung jumlah frefquensi kata")
+    nltk.download('punkt')
+    postagger = PosTag()
+    def pos_words(text):
+        tokens =postagger.get_pos_tag(text)
+        return tokens
+
+    df_reviews_all_proses['content_part_of_speech']  = df_reviews_all_proses['content_cleaning_normalized'].apply(pos_words)
+    st.dataframe(df_reviews_all_proses.head(20), selection_mode="multi-row", use_container_width=True)
+
+    st.subheader("edit di POS")
+    st.write("Menghitung jumlah frefquensi kata")
+    #@title edit di POS
+    def remove_pronouns(pos_list,tag1):
+        return [(word, tag) for word, tag in pos_list if tag != tag1]
+
+    # Apply the function to the DataFrame
+    df_reviews_all_proses['content_part_of_speech'] = df_reviews_all_proses['content_part_of_speech'].apply(lambda pos_list: remove_pronouns(pos_list,tag1="PR"))
+    df_reviews_all_proses['content_part_of_speech'] = df_reviews_all_proses['content_part_of_speech'].apply(lambda pos_list: remove_pronouns(pos_list,tag1="RP"))
+    df_reviews_all_proses['content_part_of_speech'] = df_reviews_all_proses['content_part_of_speech'].apply(lambda pos_list: remove_pronouns(pos_list,tag1="UH"))
+    df_reviews_all_proses['content_part_of_speech'] = df_reviews_all_proses['content_part_of_speech'].apply(lambda pos_list: remove_pronouns(pos_list,tag1="SC"))
+    df_reviews_all_proses['content_part_of_speech'] = df_reviews_all_proses['content_part_of_speech'].apply(lambda pos_list: remove_pronouns(pos_list,tag1="SYM"))
+    df_reviews_all_proses['content_part_of_speech'] = df_reviews_all_proses['content_part_of_speech'].apply(lambda pos_list: remove_pronouns(pos_list,tag1="IN"))
+    df_reviews_all_proses['content_part_of_speech'] = df_reviews_all_proses['content_part_of_speech'].apply(lambda pos_list: remove_pronouns(pos_list,tag1="DT"))
+    df_reviews_all_proses['content_part_of_speech'] = df_reviews_all_proses['content_part_of_speech'].apply(lambda pos_list: remove_pronouns(pos_list,tag1="CC"))
+    df_reviews_all_proses['content_part_of_speech'] = df_reviews_all_proses['content_part_of_speech'].apply(lambda pos_list: remove_pronouns(pos_list,tag1="FW"))
+    st.dataframe(df_reviews_all_proses.head(20), selection_mode="multi-row", use_container_width=True)
+
+    st.subheader("Lemmatizer")
+    st.write("Menghitung jumlah frefquensi kata")
+    # Inisialisasi StopWord dan Lemmatizer
+    # Inisialisasi lemmatizer
+    lemmatizer = Lemmatizer()
+
+    # Definisikan fungsi untuk lemmatisasi token
+    def lemmatize_wrapper(tokens):
+        # Lemmatize each token
+        lemmatized_tokens = [lemmatizer.lemmatize(token) for token in tokens]
+        return ' '.join(lemmatized_tokens)
+
+    # Asumsi df_reviews_all_proses sudah didefinisikan sebelumnya dan memiliki kolom 'content_tokenizing'
+    df_reviews_all_proses['content_proses_stemming_nlp_id'] = df_reviews_all_proses['content_tokenizing'].apply(lemmatize_wrapper)
+
+    st.dataframe(df_reviews_all_proses.head(20), selection_mode="multi-row", use_container_width=True)
+
+    st.subheader("world cloud")
+    st.write("Menghitung jumlah frefquensi kata")
+    # Create the text for the word cloud
+    text = ' '.join(df_reviews_all_proses['content_proses_stemming_nlp_id'].apply(lambda x: str(x) if isinstance(x, (str, int, float)) else ''))
+
+    # Generate the word cloud
+    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
+
+    # Plotting the word cloud
+    plt.figure(figsize=(10, 5))
+    plt.title("WordCloud Stemming menggunakan NLP_id", fontsize=18, fontweight='bold', pad=20)
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis("off")
+
+    # Save the plot to a file
+    plt.savefig('wordcloud.png')
+
+    # Use Streamlit to display the word cloud
+    st.title("WordCloud Stemming menggunakan NLP_id")
+    st.image('wordcloud.png')
 if __name__ == "__main__":
     main()
