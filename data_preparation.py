@@ -528,7 +528,7 @@ def main():
 
     st.title("Find the optimal number of neighbors for KNN")
     # Find the optimal number of neighbors for KNN
-    k_range = range(1, 31)
+    k_range = range(1, 21)
     k_scores = []
 
     for k in k_range:
