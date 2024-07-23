@@ -19,7 +19,7 @@ st.set_page_config(
 # Define the pages and styles for the navigation bar
 pages = ["Dashboard", "Data Preparation", "Modeling dan Evaluasi", "About"]
 with st.sidebar:
-    page = option_menu("Main Menu", pages, 
+    page = option_menu("Main Menu", pages, styles={ "container": {"padding": "5!important", "background-color": "#fafafa"}, "icon": {"color": "orange", "font-size": "25px"}, "nav-link": { "font-size": "16px", "text-align": "left", "margin": "0px", "--hover-color": "#eee", }, "nav-link-selected": {"background-color": "#02ab21"}, },
         icons=['house', 'gear', 'activity', 'info-circle'], menu_icon="cast", default_index=0)
 # Load and process data
 
