@@ -60,8 +60,8 @@ df_combined =combine_dataframes(st.session_state.results_df,df_reviews_all_model
 
 # Page: about
 if page == "About":
-    st.header("About")
-    st.write("Ini adalah halaman about.")
+    st.header("Tentang myBCA")
+    st.write("Aplikasi mobile banking myBCA dari Bank Central Asia (BCA) adalah layanan perbankan digital yang memberikan kemudahan bagi nasabah untuk mengelola keuangan melalui perangkat mobile. Fitur utamanya mencakup cek saldo, transfer dana, pembayaran tagihan, pembelian pulsa, investasi, dan pembayaran dengan QR Code. Aplikasi ini mengutamakan keamanan dengan autentikasi ganda dan enkripsi data, serta menawarkan antarmuka yang user-friendly dan notifikasi real-time untuk transaksi. Tersedia untuk perangkat Android dan iOS, myBCA memudahkan pendaftaran dan aktivasi langsung melalui aplikasi, serta terintegrasi dengan layanan digital BCA lainnya, memberikan pengalaman perbankan yang efisien dan praktis.")
 
 elif page == "Data Preparation":
     st.header("Data Preparation")
@@ -130,7 +130,7 @@ elif page == "Dashboard":
     col1, col2 = st.columns(2)
 
     with col1:
-        st.header("Total Score")
+        st.header("Total Rating Yang Diberikan Oleh Pengguna")
         # Plot Total Score
         score_counts = reviews_df['score'].value_counts().sort_index()
         fig1, ax1 = plt.subplots()
@@ -142,7 +142,7 @@ elif page == "Dashboard":
         st.pyplot(fig1)
 
     with col2:
-        st.header("Distribution of 'at' (review times)")
+        st.header("Data Tahun ke Tahun Jumlah Ulasan)")
         # Plot Distribution of 'at'
         fig2, ax2 = plt.subplots()
         reviews_df['at'].hist(bins=50, edgecolor='k', alpha=0.7, ax=ax2)
@@ -155,7 +155,7 @@ elif page == "Dashboard":
     col3, col4 = st.columns(2)
 
     with col3:
-        st.header("Distribusi Score menurut Versi Aplikasi")
+        st.header("Total Rating Berdasarkan Versi Aplikasi")
         # Plot Distribusi Score menurut Versi Aplikasi
         app_version_scores = reviews_df.groupby(['appVersion', 'score']).size().unstack().fillna(0)
         fig3, ax3 = plt.subplots(figsize=(14, 8))
@@ -193,26 +193,26 @@ elif page == "Dashboard":
     mean_score_negatif = df_negatif['score'].mean()
 
     # Display in Streamlit
-    st.subheader("WordClouds and DataFrames for Predictions")
+    st.subheader("WordClouds dan DataFrame")
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.header("Positive")
+        st.header("Ulasan Positif")
         fig_pos = create_wordcloud(content_positif, 'Greens')
         st.pyplot(fig_pos)
         st.write(f"Average Score: {mean_score_positif:.2f}")
         st.dataframe(df_positif[['content', 'predicted_label']])
 
     with col2:
-        st.header("Neutral")
+        st.header("Ulasan Netral")
         fig_netral = create_wordcloud(content_netral, 'Greys')
         st.pyplot(fig_netral)
         st.write(f"Average Score: {mean_score_netral:.2f}")
         st.dataframe(df_netral[['content', 'predicted_label']])
 
     with col3:
-        st.header("Negative")
+        st.header("Ulasan Negatif")
         fig_neg = create_wordcloud(content_negatif, 'Reds')
         st.pyplot(fig_neg)
         st.write(f"Average Score: {mean_score_negatif:.2f}")
