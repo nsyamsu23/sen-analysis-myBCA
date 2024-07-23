@@ -288,6 +288,7 @@ def prepare_data(df,kamus_tidak_baku,chat_words_mapping):
     reset_total_changed_count()
     df_proses['content_proses_stemming_nlp_id'] = df_proses['content_tokenizing'].progress_apply(process_and_count_changes)
     sia1A, sia1B, sia2 = download_and_update_lexicons()
+    df_proses['content_proses_stemming_nlp_id'] = df_proses['content_proses_stemming_nlp_id'].progress_apply(remove_stop_words_nltk)
     df_proses['sentiment'] = df_proses['content_proses_stemming_nlp_id'].apply(lambda x: classify_sentiment(x, sia2))
     return df_proses
 # Definisikan fungsi untuk lemmatisasi token
@@ -371,7 +372,7 @@ def remove_pattern(text):
 def remove_stop_words_nltk(text):
     stop_words = stopwords.words('indonesian')
     stop_words.extend([
-        "bca","myBCA","flash"
+        "bca","mybca","MYBCA","myBCA","flash"
     ])
     stop_words = set(stop_words)
     words = text.split()
