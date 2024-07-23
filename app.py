@@ -125,8 +125,7 @@ elif page == "Modeling dan Evaluasi":
 # Page: Dashboard
 elif page == "Dashboard":
     st.image(image='https://play-lh.googleusercontent.com/ckrnc0pzN0oZgSaMQMnOYrICdBLwFTuI17MlTUp9ftyZPJ-m4K1pA3_Dz1B-1dCFVZbv', width=150, use_column_width=150)
-    st.title('User Reviews Clustering Dashboard')
-    st.title("Google Play Store Reviews Analysis")
+    st.title('Analisis Sentimen w/ K-NN - Aplikasi myBCA')
 
     col1, col2 = st.columns(2)
 
