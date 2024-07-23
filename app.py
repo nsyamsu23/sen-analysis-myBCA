@@ -10,8 +10,8 @@ from sklearn.preprocessing import LabelEncoder
 label_encoder = LabelEncoder()
 # Set the page configuration
 st.set_page_config(
-    page_title="Dashboard",
-    page_icon=":bar_chart:",
+    page_title="myBCA | Analisis Sentimen",
+    page_icon="https://play-lh.googleusercontent.com/ckrnc0pzN0oZgSaMQMnOYrICdBLwFTuI17MlTUp9ftyZPJ-m4K1pA3_Dz1B-1dCFVZbv",
     initial_sidebar_state="collapsed",
     layout="wide"
 )
@@ -124,6 +124,7 @@ elif page == "Modeling dan Evaluasi":
     st.dataframe(df_combined, selection_mode="multi-row", use_container_width=True)
 # Page: Dashboard
 elif page == "Dashboard":
+    st.image(image='https://play-lh.googleusercontent.com/ckrnc0pzN0oZgSaMQMnOYrICdBLwFTuI17MlTUp9ftyZPJ-m4K1pA3_Dz1B-1dCFVZbv', width=150, use_column_width=150)
     st.title('User Reviews Clustering Dashboard')
     st.title("Google Play Store Reviews Analysis")
 
@@ -218,3 +219,4 @@ elif page == "Dashboard":
         st.write(f"Average Score: {mean_score_negatif:.2f}")
         st.dataframe(df_negatif[['content', 'predicted_label']])
     evaluate_and_plot_knn(y_test, y_pred)
+st.write("End.")
