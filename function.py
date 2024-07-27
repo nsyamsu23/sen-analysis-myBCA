@@ -201,7 +201,7 @@ def apply_smote(X, y, random_state=42):
 
     return X_resampled, y_resampled
 
-def process_and_vectorize_reviews(df, label_col, text_col, id_col, test_size=0.3, random_state=42, max_features=1000):
+def process_and_vectorize_reviews(df, label_col, text_col, id_col, test_size=0.3, random_state=42, max_features=115):
     # Extract documents, labels, and ids
     documents = df[text_col]
     labels = df[label_col]

@@ -48,7 +48,7 @@ X_train_tfidf_matrix, X_test_tfidf_matrix, y_train, y_test, id_train, id_test, t
     id_col='reviewId'
 )
 X_resampled, y_resampled = apply_smote(X_train_tfidf_matrix, y_train)
-optimal_k = 1
+optimal_k = 5
 y_pred = st.session_state.y_pred = train_and_predict_knn(X_resampled, y_resampled, X_test_tfidf_matrix, optimal_k)
 st.session_state.results_df = pd.DataFrame({
     'reviewId': id_test,
